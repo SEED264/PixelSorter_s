@@ -59,5 +59,6 @@ PixelSorterのメインの関数です。これを呼び出すとPixel Sortの�
 Instructions(pNum)
 ```
 スクリプトの説明書を描画します。
+#### 引数
 * `pNum : int`  
 	ページ番号[1-2]
