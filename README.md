@@ -1,5 +1,5 @@
 # PixelSorter_s
-
+![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ## ビルド
 
 事前にシステムかユーザーの環境変数に`LUA_LIB_PATH`を作り、Luaのライブラリとヘッダファイルのパスを登録しておくと、後々楽です。  
