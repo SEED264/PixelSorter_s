@@ -8,278 +8,294 @@
 #include"PixelSort_struct.h"
 #include "UtilFunc.h"
 
+#define DebugCode(x)
+
+#ifdef _DEBUG
+#include <chrono>
+#include <iostream>
+#define DebugCode(x) x
+#endif // _DEBUG
+
 using namespace std;
 
 float(*const comp_func[])(Pixel_BGRA*) = {
-	UtilFunc::comp_luminance,
-	UtilFunc::comp_average,
-	UtilFunc::comp_multiply,
-	UtilFunc::comp_min,
-	UtilFunc::comp_max,
-	UtilFunc::comp_xor
+    UtilFunc::comp_luminance,
+    UtilFunc::comp_average,
+    UtilFunc::comp_multiply,
+    UtilFunc::comp_min,
+    UtilFunc::comp_max,
+    UtilFunc::comp_xor
 };
 
 inline unsigned int calpos(unsigned int x, unsigned int y, unsigned int w, byte mag){
-	return y*mag*w + min(UtilFunc::clamp(x, 0, w)*mag, w);
+    return y*mag*w + min(UtilFunc::clamp(x, 0, w)*mag, w);
 };
 
 int PixelSort_Func(lua_State *L){
-	int b = UtilFunc::clamp((int)lua_tointeger(L, 1), 0, 4096);
-	int d = UtilFunc::clamp((int)lua_tointeger(L, 2), 0, 4096);
-	int r = UtilFunc::clamp((int)lua_tointeger(L, 3), 1, 4);
-	byte dsize = (int)lua_tointeger(L, 4);
-	bool conf = (bool)lua_toboolean(L, 5);
-	int stretch_direction = UtilFunc::clamp((int)lua_tointeger(L, 6), 1, 4);
-	float stretch_length = UtilFunc::clamp((float)lua_tonumber(L, 7)/100.f, 0.f, 1.f);
-	byte comp = UtilFunc::clamp((byte)lua_tonumber(L, 8)-1, 0, 5);
-	bool bi = (bool)lua_tonumber(L, 9);
-	byte sr = r;
+    int b = UtilFunc::clamp((int)lua_tointeger(L, 1), 0, 4096);
+    int d = UtilFunc::clamp((int)lua_tointeger(L, 2), 0, 4096);
+    int r = UtilFunc::clamp((int)lua_tointeger(L, 3), 1, 4);
+    byte dsize = (int)lua_tointeger(L, 4);
+    bool conf = (bool)lua_toboolean(L, 5);
+    int stretch_direction = UtilFunc::clamp((int)lua_tointeger(L, 6), 1, 4);
+    float stretch_length = UtilFunc::clamp((float)lua_tonumber(L, 7)/100.f, 0.f, 1.f);
+    byte comp = UtilFunc::clamp((byte)lua_tonumber(L, 8)-1, 0, 5);
+    bool bi = (bool)lua_tonumber(L, 9);
+    byte sr = r;
 
-	lua_getglobal(L, "obj");
-	lua_getfield(L, -1, "getpixeldata");
-	lua_call(L, 0, 3);
-	int h = lua_tointeger(L, -1);
-	lua_pop(L, 1);
-	int w = lua_tointeger(L, -1);
-	lua_pop(L, 1);
-	Pixel_BGRA *sourcedata = new Pixel_BGRA[w*h];
-	memcpy(sourcedata, lua_touserdata(L, -1), sizeof(Pixel_BGRA)*w*h);
-	lua_pop(L, 1);
-	lua_getfield(L, -1, "effect");
-	lua_pushstring(L, "ƒ‹ƒ~ƒiƒ“ƒXƒL[");
-	lua_pushstring(L, "type");
-	lua_pushnumber(L, 4);
-	lua_pushstring(L, "Šî€‹P“x");
-	lua_pushnumber(L, b);
-	lua_pushstring(L, "‚Ú‚©‚µ");
-	lua_pushnumber(L, d);
-	lua_call(L, 7, 0);
-	lua_getfield(L, -1, "getpixeldata");
-	lua_call(L, 0, 3);
-	Pixel_BGRA *data = (Pixel_BGRA*)lua_touserdata(L, -3);
-	lua_pop(L, 1);
-	lua_pop(L, 1);
-	lua_pop(L, 1);
-	const int size = w*h;
-	int dw = ceil((float)w / (float)dsize);
-	int dh = ceil((float)h / (float)dsize);
+    DebugCode(
+        chrono::system_clock::time_point start = chrono::system_clock::now();
+    );
 
-	Pixel_BGRA *sdata = new Pixel_BGRA[dw*dh];
-	Pixel_BGRA *odata = (bi) ? sourcedata : new Pixel_BGRA[size];
+    lua_getglobal(L, "obj");
+    lua_getfield(L, -1, "getpixeldata");
+    lua_call(L, 0, 3);
+    int h = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+    int w = lua_tointeger(L, -1);
+    lua_pop(L, 1);
+    Pixel_BGRA *sourcedata = new Pixel_BGRA[w*h];
+    memcpy(sourcedata, lua_touserdata(L, -1), sizeof(Pixel_BGRA)*w*h);
+    lua_pop(L, 1);
+    lua_getfield(L, -1, "effect");
+    lua_pushstring(L, "ãƒ«ãƒŸãƒŠãƒ³ã‚¹ã‚­ãƒ¼");
+    lua_pushstring(L, "type");
+    lua_pushnumber(L, 4);
+    lua_pushstring(L, "åŸºæº–è¼åº¦");
+    lua_pushnumber(L, b);
+    lua_pushstring(L, "ã¼ã‹ã—");
+    lua_pushnumber(L, d);
+    lua_call(L, 7, 0);
+    lua_getfield(L, -1, "getpixeldata");
+    lua_call(L, 0, 3);
+    Pixel_BGRA *data = (Pixel_BGRA*)lua_touserdata(L, -3);
+    lua_pop(L, 1);
+    lua_pop(L, 1);
+    lua_pop(L, 1);
+    const int size = w*h;
+    int dw = ceil((float)w / (float)dsize);
+    int dh = ceil((float)h / (float)dsize);
 
-	isize orig_isize(w, h);
-	isize shr_isize(dw, dh);
+    Pixel_BGRA *sdata = new Pixel_BGRA[dw*dh];
+    Pixel_BGRA *odata = (bi) ? sourcedata : new Pixel_BGRA[size];
 
-	if (r<3){
-		Trans::Shrink_r(data, sdata, orig_isize, shr_isize, dsize);
-	}else{
-		Trans::Shrink(data, sdata, orig_isize, shr_isize, dsize);
-	}
-	Pixel_map *map = new Pixel_map[dw*dh];
-	for (unsigned long i = 0; i < dw*dh; i++) {
-		Pixel_map *m = &map[i];
-		m->pix = sdata[i];
-		m->sort_key = comp_func[comp](&m->pix);
-	}
+    isize orig_isize(w, h);
+    isize shr_isize(dw, dh);
 
-
-	int vw =  (r < 3) ? dh : dw;
-	int vh =  (r < 3) ? dw : dh;
-	if(!conf){
-		for (unsigned long y = 0; y < vh; y++){
-			vector<Pixel_map> pix;
-			unsigned long x = 0;
-			unsigned long offsetpos = 0;
-			while (x < vw) {
-				unsigned long pos = y*vw + x;
-				byte a = map[pos].pix.a;
-				if (a){
-					if (!pix.size()){
-						//OutputDebugString("emp");
-						offsetpos = pos;
-					}
-					pix.push_back(map[pos]);
-				}else if(pix.size()){
-					//OutputDebugString(to_string(pix.size()).c_str());
-					if (sr == 2 || sr == 4) {
-						sort(pix.begin(), pix.end(), greater<Pixel_map>());// , [](const Pixel_map& a, const Pixel_map& b) {return (a.sort_key < b.sort_key); });
-					}
-					else {
-						sort(pix.begin(), pix.end());// , [](const Pixel_map& a, const Pixel_map& b) {return (a.sort_key > b.sort_key); });
-					}
-					for (unsigned long i = 0; i < pix.size(); i++) {
-						sdata[offsetpos + i] = pix[i].pix;
-					}
-					pix.clear();
-					offsetpos = 0;
-				}
-				if (x==(vw-1)){
-					//OutputDebugString(to_string(pix.size()).c_str());
-					if (sr == 2 || sr == 4) {
-						sort(pix.begin(), pix.end(), greater<Pixel_map>());// , [](const Pixel_map& a, const Pixel_map& b) {return (a.sort_key < b.sort_key); });
-					}
-					else {
-						sort(pix.begin(), pix.end());// , [](const Pixel_map& a, const Pixel_map& b) {return (a.sort_key > b.sort_key); });
-					}
-					for (unsigned long i = 0; i < pix.size(); i++) {
-						sdata[offsetpos + i] = pix[i].pix;
-					}
-					pix.clear();
-					offsetpos = 0;
-				}
-				x++;
-			}
-		}
-	} else {
-		for (unsigned long i = 0; i < vw*vh; i++){
-			Pixel_BGRA p = sdata[i];
-			if (p.a){
-				p.r = 0;
-				p.g = 255;
-				p.b = 0;
-				sdata[i] = p;
-			}
-		}
-	}
-	if (bi) odata = sourcedata;
-
-	if (r < 3){
-		Trans::Restore_r(sdata, odata, shr_isize, orig_isize, dsize, stretch_direction, stretch_length, bi);
-	}
-	else
-	{
-		Trans::Restore(sdata, odata, shr_isize, orig_isize, dsize, stretch_direction, stretch_length, bi);
-	}
-
-	lua_getglobal(L, "obj");
-	lua_getfield(L, -1, "putpixeldata");
-	lua_pushlightuserdata(L, odata);
-	lua_call(L, 1, 0);
+    if (r<3){
+        Trans::Shrink_r(data, sdata, orig_isize, shr_isize, dsize);
+    }else{
+        Trans::Shrink(data, sdata, orig_isize, shr_isize, dsize);
+    }
+    Pixel_map *map = new Pixel_map[dw*dh];
+#pragma omp parallel for
+    for (unsigned long i = 0; i < dw*dh; i++) {
+        Pixel_map *m = &map[i];
+        m->pix = sdata[i];
+        m->sort_key = comp_func[comp](&m->pix);
+    }
 
 
-	delete[] sdata;
-	delete[] map;
-	if (!bi)delete[] odata;
-	delete[] sourcedata;
-	return 0;
+    int vw =  (r < 3) ? dh : dw;
+    int vh =  (r < 3) ? dw : dh;
+    if(!conf){
+        #pragma omp parallel for
+        for (unsigned long y = 0; y < vh; y++){
+            vector<Pixel_map> pix;
+            unsigned long x = 0;
+            unsigned long offsetpos = 0;
+            for (; x < vw; x++) {
+                unsigned long pos = y*vw + x;
+                byte a = map[pos].pix.a;
+                if (a){
+                    if (!pix.size()){
+                        offsetpos = pos;
+                    }
+                    pix.push_back(map[pos]);
+                }else if(pix.size()){
+                    if (sr == 2 || sr == 4) {
+                        sort(pix.begin(), pix.end(), greater<Pixel_map>());
+                    }
+                    else {
+                        sort(pix.begin(), pix.end());
+                    }
+                    for (unsigned long i = 0; i < pix.size(); i++) {
+                        sdata[offsetpos + i] = pix[i].pix;
+                    }
+                    pix.clear();
+                    offsetpos = 0;
+                }
+                if (x==(vw-1)){
+                    if (sr == 2 || sr == 4) {
+                        sort(pix.begin(), pix.end(), greater<Pixel_map>());
+                    }
+                    else {
+                        sort(pix.begin(), pix.end());
+                    }
+                    for (unsigned long i = 0; i < pix.size(); i++) {
+                        sdata[offsetpos + i] = pix[i].pix;
+                    }
+                    pix.clear();
+                    offsetpos = 0;
+                }
+            }
+        }
+    } else {
+        #pragma omp parallel for
+        for (unsigned long i = 0; i < vw*vh; i++){
+            Pixel_BGRA p = sdata[i];
+            if (p.a){
+                p.r = 0;
+                p.g = 255;
+                p.b = 0;
+                sdata[i] = p;
+            }
+        }
+    }
+    if (bi) odata = sourcedata;
+
+    if (r < 3){
+        Trans::Restore_r(sdata, odata, shr_isize, orig_isize, dsize, stretch_direction, stretch_length, bi);
+    }
+    else
+    {
+        Trans::Restore(sdata, odata, shr_isize, orig_isize, dsize, stretch_direction, stretch_length, bi);
+    }
+
+    lua_getglobal(L, "obj");
+    lua_getfield(L, -1, "putpixeldata");
+    lua_pushlightuserdata(L, odata);
+    lua_call(L, 1, 0);
+
+    DebugCode(
+    chrono::system_clock::time_point end = chrono::system_clock::now();
+    double duration = chrono::duration_cast<chrono::nanoseconds>(end - start).count() / 1000000.0;
+    OutputDebugString(("Process time : " + to_string(duration) + "ms").c_str());
+    );
+
+    delete[] sdata;
+    delete[] map;
+    if (!bi)delete[] odata;
+    delete[] sourcedata;
+    return 0;
 }
 
 int Instructions(lua_State *L) {
-	const byte Max_page = 2;
-	byte pagenum = UtilFunc::clamp((byte)lua_tointeger(L, 1)-1, 0, Max_page-1);
+    const byte Max_page = 2;
+    byte pagenum = UtilFunc::clamp((byte)lua_tointeger(L, 1)-1, 0, Max_page-1);
 
-	string version = "1.51";
-	string Inst[Max_page];
-	Inst[0] =
-			"Šî€‹P“x : ‰æ‘œØ‚èo‚µ‚ÌŠî€‚Æ‚È‚é‹P“x‚Å‚·B\n"
-			"‹P“x• : Šî€‹P“x‚©‚ç‚Ì‹P“x‚Ì•‚Å‚·B\n"
-			"•ûŒü : Œ³‚Æ‚È‚Á‚½ƒo[ƒWƒ‡ƒ“‚©‚çŒ¸‚Á‚Ä4í—Ş‚É‚È‚è‚Ü‚µ‚½Bc‰¡2•ûŒü‚¸‚Â‚È‚Ì‚Å‚±‚ê‚ªˆê”Ô‚¾‚Æv‚¢‚Ü‚·B\n"
-			"ˆø‚«L‚Î‚µ : ƒ\[ƒgŒã‚Ì‰æ‘œ‚ğw’è‚µ‚½•ûŒü‚Éˆø‚«‰„‚Î‚µ‚Ü‚·B\n"
-			"ˆøL•ûŒü : ˆø‚«L‚Î‚µ‚Ì•ûŒü‚ğ‰EA¶A‰ºAã‚Ì4í—Ş‚©‚ç‘I‚×‚Ü‚·B\n"
-			"ƒ\[ƒgŠî€ : ƒ\[ƒg‚ÌŠî€’l‚ÌŒvZ®‚ğ‘I‚×‚Ü‚·(‘S6í—Ş)B\n"
-			"ƒTƒCƒY : ƒsƒNƒZƒ‹‚Ìƒ‚ƒUƒCƒN‰»‚ÌƒTƒCƒY‚Å‚·B¬‚³‚¯‚ê‚Î¬‚³‚¢‚Ù‚Çd‚¢‚Å‚·B‹t‚É‘å‚«‚¢‚ÆŒ‹\Œy‚¢‚Å‚·B\n"
-			"—Ìˆæ‚ğŠm”F : ‘I‘ğ‚µ‚½”ÍˆÍ‚ğ—Î‚Å•\¦‚µ‚Ü‚·B\n"
-			"Œ³‰æ‘œ‚Æ‡¬ : ƒ\[ƒX‚Ì‰æ‘œ‚ğŒã‚ë‚É‡¬‚µ‚Ü‚·B\n";
-	Inst[1] =
-			"<s36>ƒ\[ƒgŠî€® [1-6]\n<s>"
-			"  1 : Luminance (‹P“xŠî€)\n"
-			"  2 : Average (RGB‚Ì•½‹Ï)\n"
-			"  3 : Multiply (³‹K‰»‚µ‚½RGB‚ğæZ)\n"
-			"  4 : Min (RGB‚ÌÅ¬’l)\n"
-			"  5 : Max (RGB‚ÌÅ‘å’l)\n"
-			"  6 : XOR (RGB‚ÅXOR‰‰Z)";
+    string version = "1.51";
+    string Inst[Max_page];
+    Inst[0] =
+            "åŸºæº–è¼åº¦ : ç”»åƒåˆ‡ã‚Šå‡ºã—ã®åŸºæº–ã¨ãªã‚‹è¼åº¦ã§ã™ã€‚\n"
+            "è¼åº¦å¹… : åŸºæº–è¼åº¦ã‹ã‚‰ã®è¼åº¦ã®å¹…ã§ã™ã€‚\n"
+            "æ–¹å‘ : å…ƒã¨ãªã£ãŸãƒãƒ¼ã‚¸ãƒ§ãƒ³ã‹ã‚‰æ¸›ã£ã¦4ç¨®é¡ã«ãªã‚Šã¾ã—ãŸã€‚ç¸¦æ¨ª2æ–¹å‘ãšã¤ãªã®ã§ã“ã‚ŒãŒä¸€ç•ªã ã¨æ€ã„ã¾ã™ã€‚\n"
+            "å¼•ãä¼¸ã°ã— : ã‚½ãƒ¼ãƒˆå¾Œã®ç”»åƒã‚’æŒ‡å®šã—ãŸæ–¹å‘ã«å¼•ãå»¶ã°ã—ã¾ã™ã€‚\n"
+            "å¼•ä¼¸æ–¹å‘ : å¼•ãä¼¸ã°ã—ã®æ–¹å‘ã‚’å³ã€å·¦ã€ä¸‹ã€ä¸Šã®4ç¨®é¡ã‹ã‚‰é¸ã¹ã¾ã™ã€‚\n"
+            "ã‚½ãƒ¼ãƒˆåŸºæº– : ã‚½ãƒ¼ãƒˆã®åŸºæº–å€¤ã®è¨ˆç®—å¼ã‚’é¸ã¹ã¾ã™(å…¨6ç¨®é¡)ã€‚\n"
+            "ã‚µã‚¤ã‚º : ãƒ”ã‚¯ã‚»ãƒ«ã®ãƒ¢ã‚¶ã‚¤ã‚¯åŒ–ã®ã‚µã‚¤ã‚ºã§ã™ã€‚å°ã•ã‘ã‚Œã°å°ã•ã„ã»ã©é‡ã„ã§ã™ã€‚é€†ã«å¤§ãã„ã¨çµæ§‹è»½ã„ã§ã™ã€‚\n"
+            "é ˜åŸŸã‚’ç¢ºèª : é¸æŠã—ãŸç¯„å›²ã‚’ç·‘ã§è¡¨ç¤ºã—ã¾ã™ã€‚\n"
+            "å…ƒç”»åƒã¨åˆæˆ : ã‚½ãƒ¼ã‚¹ã®ç”»åƒã‚’å¾Œã‚ã«åˆæˆã—ã¾ã™ã€‚\n";
+    Inst[1] =
+            "<s36>ã‚½ãƒ¼ãƒˆåŸºæº–å¼ [1-6]\n<s>"
+            "  1 : Luminance (è¼åº¦åŸºæº–)\n"
+            "  2 : Average (RGBã®å¹³å‡)\n"
+            "  3 : Multiply (æ­£è¦åŒ–ã—ãŸRGBã‚’ä¹—ç®—)\n"
+            "  4 : Min (RGBã®æœ€å°å€¤)\n"
+            "  5 : Max (RGBã®æœ€å¤§å€¤)\n"
+            "  6 : XOR (RGBã§XORæ¼”ç®—)";
 
-	string info = "<s40>PixelSorter_s ŠÈˆÕà–¾‘ - Page : " + to_string(pagenum+1) + "<s>\nVersion : " + version + "\n\n";
-	info += Inst[pagenum];
-	lua_getglobal(L, "obj");
+    string info = "<s40>PixelSorter_s ç°¡æ˜“èª¬æ˜æ›¸ - Page : " + to_string(pagenum+1) + "<s>\nVersion : " + version + "\n\n";
+    info += Inst[pagenum];
+    lua_getglobal(L, "obj");
 
-	lua_getfield(L, -1, "effect");
-	lua_call(L, 0, 0);
+    lua_getfield(L, -1, "effect");
+    lua_call(L, 0, 0);
 
-	lua_getfield(L, -1, "draw");
-	lua_call(L, 0, 0);
+    lua_getfield(L, -1, "draw");
+    lua_call(L, 0, 0);
 
-	lua_getfield(L, -1, "load");
-	lua_pushstring(L, "figure");
-	lua_pushstring(L, "lŠpŒ`");
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 1920);
-	lua_call(L, 4, 0);
+    lua_getfield(L, -1, "load");
+    lua_pushstring(L, "figure");
+    lua_pushstring(L, "å››è§’å½¢");
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 1920);
+    lua_call(L, 4, 0);
 
-	lua_getfield(L, -1, "effect");
-	lua_pushstring(L, "ƒŠƒTƒCƒY");
-	lua_pushstring(L, "Y");
-	lua_pushnumber(L, 55);
-	lua_call(L, 3, 0);
+    lua_getfield(L, -1, "effect");
+    lua_pushstring(L, "ãƒªã‚µã‚¤ã‚º");
+    lua_pushstring(L, "Y");
+    lua_pushnumber(L, 55);
+    lua_call(L, 3, 0);
 
-	lua_getfield(L, -1, "draw");
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 1);
-	lua_pushnumber(L, 0.75);
-	lua_call(L, 5, 0);
+    lua_getfield(L, -1, "draw");
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, 0.75);
+    lua_call(L, 5, 0);
 
-	lua_getfield(L, -1, "load");
-	lua_pushstring(L, "figure");
-	lua_pushstring(L, "lŠpŒ`");
-	lua_pushinteger(L, 0xaaaaaa);
-	lua_pushinteger(L, 1870);
-	lua_call(L, 4, 0);
+    lua_getfield(L, -1, "load");
+    lua_pushstring(L, "figure");
+    lua_pushstring(L, "å››è§’å½¢");
+    lua_pushinteger(L, 0xaaaaaa);
+    lua_pushinteger(L, 1870);
+    lua_call(L, 4, 0);
 
-	lua_getfield(L, -1, "effect");
-	lua_pushstring(L, "ƒŠƒTƒCƒY");
-	lua_pushstring(L, "Y");
-	lua_pushnumber(L, 50);
-	lua_call(L, 3, 0);
+    lua_getfield(L, -1, "effect");
+    lua_pushstring(L, "ãƒªã‚µã‚¤ã‚º");
+    lua_pushstring(L, "Y");
+    lua_pushnumber(L, 50);
+    lua_call(L, 3, 0);
 
-	lua_getfield(L, -1, "draw");
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 1);
-	lua_pushnumber(L, 0.3);
-	lua_call(L, 5, 0);
+    lua_getfield(L, -1, "draw");
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, 0.3);
+    lua_call(L, 5, 0);
 
-	lua_getfield(L, -1, "setfont");
-	lua_pushstring(L, "ƒƒCƒŠƒI");
-	lua_pushinteger(L, 30);
-	lua_pushinteger(L, 1);
-	lua_pushinteger(L, 0xffffff);
-	lua_pushinteger(L, 0x444444);
-	lua_call(L, 5, 0);
+    lua_getfield(L, -1, "setfont");
+    lua_pushstring(L, "ãƒ¡ã‚¤ãƒªã‚ª");
+    lua_pushinteger(L, 30);
+    lua_pushinteger(L, 1);
+    lua_pushinteger(L, 0xffffff);
+    lua_pushinteger(L, 0x444444);
+    lua_call(L, 5, 0);
 
-	lua_getfield(L, -1, "load");
-	lua_pushstring(L, "text");
-	lua_pushstring(L, info.c_str());
-	lua_call(L, 2, 0);
+    lua_getfield(L, -1, "load");
+    lua_pushstring(L, "text");
+    lua_pushstring(L, info.c_str());
+    lua_call(L, 2, 0);
 
-	lua_getfield(L, -1, "draw");
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 0);
-	lua_pushinteger(L, 1);
-	lua_pushnumber(L, 1);
-	lua_call(L, 5, 0);
+    lua_getfield(L, -1, "draw");
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 0);
+    lua_pushinteger(L, 1);
+    lua_pushnumber(L, 1);
+    lua_call(L, 5, 0);
 
-	return 0;
+    return 0;
 }
 
 static luaL_Reg PixelSorter_s[] = {
-	{ "PixelSort", PixelSort_Func },
-	{ "Instructions", Instructions },
-	{ NULL, NULL }
+    { "PixelSort", PixelSort_Func },
+    { "Instructions", Instructions },
+    { NULL, NULL }
 };
 
 /*
-‚±‚±‚Ådll‚ğ’è‹`‚µ‚Ü‚·
-•Ê‚Ì‚à‚Ì‚ğì‚éê‡‚Í
+ã“ã“ã§dllã‚’å®šç¾©ã—ã¾ã™
+åˆ¥ã®ã‚‚ã®ã‚’ä½œã‚‹å ´åˆã¯
 luaopen_PixelSort
-‚Ì•”•ª‚ğV‚µ‚¢–¼‘O‚É•Ï‚¦‚Ä‚­‚¾‚³‚¢
+ã®éƒ¨åˆ†ã‚’æ–°ã—ã„åå‰ã«å¤‰ãˆã¦ãã ã•ã„
 */
 extern "C"{
-	__declspec(dllexport) int luaopen_PixelSorter_s(lua_State *L) {
-		luaL_register(L, "PixelSorter_s", PixelSorter_s);
-		return 1;
-	}
+    __declspec(dllexport) int luaopen_PixelSorter_s(lua_State *L) {
+        luaL_register(L, "PixelSorter_s", PixelSorter_s);
+        return 1;
+    }
 }

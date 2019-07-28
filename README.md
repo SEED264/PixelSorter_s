@@ -2,8 +2,8 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ## ビルド
 
-事前にシステムかユーザーの環境変数に`LUA_LIB_PATH`を作り、Luaのライブラリとヘッダファイルのパスを登録しておくと、後々楽です。  
-そうでない場合は、プロジェクトのプロパティの`C/C++ -> General -> Additional Include Directories`の`$(LUA_LIB_PATH)`をLuaのヘッダのインクルードパスに、`Linker -> General -> Additional Library Directories`の`$(LUA_LIB_PATH)`をLuaのライブラリのパスにそれぞれ変更してください。  
+事前にシステムかユーザーの環境変数に`LUA_LIB_PATH`、`LUA_INC_PATH`を作り、Luaのライブラリとヘッダファイルのパスを登録しておくと、後々楽です。  
+そうでない場合は、プロジェクトのプロパティの`C/C++ -> General -> Additional Include Directories`の`$(LUA_INC_PATH)`をLuaのヘッダのインクルードパスに、`Linker -> General -> Additional Library Directories`の`$(LUA_LIB_PATH)`をLuaのライブラリのパスにそれぞれ変更してください。  
 
 その後、`General -> Output Directory`をDLLを出力したい場所に変更してください。  
 自分のスクリプトのフォルダなどにしておくと、ビルドするたびにDLLをコピーしなくてもよくなるので少し楽になります。
@@ -28,32 +28,32 @@ PixelSort(lum, blur, dir, pSize, conf, eDir, enl, crit, bg)
 PixelSorterのメインの関数です。これを呼び出すとPixel Sortのエフェクトがかかった状態になります
 #### 引数
 * `lum : int`  
-	基準にする輝度
+    基準にする輝度
 * `blur : int`  
-	基準の輝度からの相対的な範囲
+    基準の輝度からの相対的な範囲
 * `dir : int`  
-	ソートする方向
+    ソートする方向
 * `pSize : int`  
-	ソートするピクセルのサイズ  
-	大きくするとモザイクのようになる
+    ソートするピクセルのサイズ  
+    大きくするとモザイクのようになる
 * `conf : boolean`  
-	ソート対象のピクセルが緑になる  
-	主に範囲の確認用
+    ソート対象のピクセルが緑になる  
+    主に範囲の確認用
 * `eDir : int`  
-	画像を引き延ばす方向
+    画像を引き延ばす方向
 * `enl : float`  
-	画像の引き延ばし(%)  
-	100%にすると一番端のピクセルのみになる
+    画像の引き延ばし(%)  
+    100%にすると一番端のピクセルのみになる
 * `crit : int`  
-	ソートの基準式  
-	1.Luminance (輝度基準)  
-	2.Average (RGBの平均)  
-	3.Multiply (正規化したRGBを乗算)  
-	4.Min (RGBの最小値)  
-	5.Max (RGBの最大値)  
-	6.XOR (RGBでXOR演算)
+    ソートの基準式  
+    1.Luminance (輝度基準)  
+    2.Average (RGBの平均)  
+    3.Multiply (正規化したRGBを乗算)  
+    4.Min (RGBの最小値)  
+    5.Max (RGBの最大値)  
+    6.XOR (RGBでXOR演算)
 * `bg : int(bool)`  
-	元画像の合成
+    元画像の合成
 
 ```lua
 Instructions(pNum)
@@ -61,4 +61,4 @@ Instructions(pNum)
 スクリプトの説明書を描画します。
 #### 引数
 * `pNum : int`  
-	ページ番号[1-2]
+    ページ番号[1-2]
