@@ -184,7 +184,7 @@ int Instructions(lua_State *L) {
     const byte Max_page = 2;
     byte pagenum = UtilFunc::clamp((byte)lua_tointeger(L, 1)-1, 0, Max_page-1);
 
-    string version = "1.51";
+    string version = "1.60";
     string Inst[Max_page];
     Inst[0] =
             "基準輝度 : 画像切り出しの基準となる輝度です。\n"
