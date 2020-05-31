@@ -58,12 +58,12 @@ int PixelSort_Func(lua_State *L){
     memcpy(sourcedata, lua_touserdata(L, -1), sizeof(Pixel_BGRA)*w*h);
     lua_pop(L, 1);
     lua_getfield(L, -1, "effect");
-    lua_pushstring(L, "ルミナンスキー");
+    lua_pushstring(L, "Luminance Key");
     lua_pushstring(L, "type");
     lua_pushnumber(L, 4);
-    lua_pushstring(L, "基準輝度");
+    lua_pushstring(L, "RefLuminance");
     lua_pushnumber(L, b);
-    lua_pushstring(L, "ぼかし");
+    lua_pushstring(L, "Blur");
     lua_pushnumber(L, d);
     lua_call(L, 7, 0);
     lua_getfield(L, -1, "getpixeldata");
@@ -187,25 +187,25 @@ int Instructions(lua_State *L) {
     string version = "1.60";
     string Inst[Max_page];
     Inst[0] =
-            "基準輝度 : 画像切り出しの基準となる輝度です。\n"
-            "輝度幅 : 基準輝度からの輝度の幅です。\n"
-            "方向 : 元となったバージョンから減って4種類になりました。縦横2方向ずつなのでこれが一番だと思います。\n"
-            "引き伸ばし : ソート後の画像を指定した方向に引き延ばします。\n"
-            "引伸方向 : 引き伸ばしの方向を右、左、下、上の4種類から選べます。\n"
-            "ソート基準 : ソートの基準値の計算式を選べます(全6種類)。\n"
-            "サイズ : ピクセルのモザイク化のサイズです。小さければ小さいほど重いです。逆に大きいと結構軽いです。\n"
-            "領域を確認 : 選択した範囲を緑で表示します。\n"
-            "元画像と合成 : ソースの画像を後ろに合成します。\n";
+            "Ref Lum : The base reference value for luminance extraction\n"
+            "Lum margin : Margin or Spread of the Lum value\n"
+            "Direction : two patterns for each of horizontal and vertical\n"
+            "Elongation : Elongate on sorted image with the specified direction\n"
+            "Elongation direction : Choosable from Up, Down, Left and Right\n"
+            "Sort Method : Choosable from 6 equations\n"
+            "Size : Size value for casting mosaic\n"
+            "Show Selection : Highlight selected area with green bounding box\n"
+            "Composite with original : Place sorted image at bottom of original and blend\n";
     Inst[1] =
-            "<s36>ソート基準式 [1-6]\n<s>"
-            "  1 : Luminance (輝度基準)\n"
-            "  2 : Average (RGBの平均)\n"
-            "  3 : Multiply (正規化したRGBを乗算)\n"
-            "  4 : Min (RGBの最小値)\n"
-            "  5 : Max (RGBの最大値)\n"
-            "  6 : XOR (RGBでXOR演算)";
+            "<s36>Sort Method [1-6]\n<s>"
+            "  1 : Luminance\n"
+            "  2 : Average\n"
+            "  3 : Multiply\n"
+            "  4 : Min\n"
+            "  5 : Max\n"
+            "  6 : XOR";
 
-    string info = "<s40>PixelSorter_s 簡易説明書 - Page : " + to_string(pagenum+1) + "<s>\nVersion : " + version + "\n\n";
+    string info = "<s40>PixelSorter_s Quick Start - Page : " + to_string(pagenum+1) + "<s>\nVersion : " + version + "\n\n";
     info += Inst[pagenum];
     lua_getglobal(L, "obj");
 
@@ -217,13 +217,13 @@ int Instructions(lua_State *L) {
 
     lua_getfield(L, -1, "load");
     lua_pushstring(L, "figure");
-    lua_pushstring(L, "四角形");
+    lua_pushstring(L, "Square");
     lua_pushinteger(L, 0);
     lua_pushinteger(L, 1920);
     lua_call(L, 4, 0);
 
     lua_getfield(L, -1, "effect");
-    lua_pushstring(L, "リサイズ");
+    lua_pushstring(L, "Resize");
     lua_pushstring(L, "Y");
     lua_pushnumber(L, 55);
     lua_call(L, 3, 0);
@@ -238,13 +238,13 @@ int Instructions(lua_State *L) {
 
     lua_getfield(L, -1, "load");
     lua_pushstring(L, "figure");
-    lua_pushstring(L, "四角形");
+    lua_pushstring(L, "Square");
     lua_pushinteger(L, 0xaaaaaa);
     lua_pushinteger(L, 1870);
     lua_call(L, 4, 0);
 
     lua_getfield(L, -1, "effect");
-    lua_pushstring(L, "リサイズ");
+    lua_pushstring(L, "Resize");
     lua_pushstring(L, "Y");
     lua_pushnumber(L, 50);
     lua_call(L, 3, 0);
@@ -258,7 +258,7 @@ int Instructions(lua_State *L) {
     lua_call(L, 5, 0);
 
     lua_getfield(L, -1, "setfont");
-    lua_pushstring(L, "メイリオ");
+    lua_pushstring(L, "Meiryo");
     lua_pushinteger(L, 30);
     lua_pushinteger(L, 1);
     lua_pushinteger(L, 0xffffff);
