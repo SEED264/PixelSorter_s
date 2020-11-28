@@ -1,0 +1,12 @@
+--track0:基準輝度,0,4096,2048,1
+--track1:輝度幅,0,4096,512,1
+--track2:サイズ,1,10,1,1
+--track3:引き伸ばし,0.0,100.0,0.0,0.1
+--check0:領域を確認,0
+--dialog:方向[1-4],local d=1; 引伸方向[1-4],local sd=1; ソート基準[1-6],local comp=1; 元画像と合成/chk,local bg=0; 簡易説明書/chk,local Inst=0; 説明書ページ[1-2],local ipn=1;
+
+require("PixelSorter_s")
+PixelSorter_s.PixelSort(obj.track0, obj.track1, d, obj.track2, obj.check0, sd, obj.track3, comp, bg)
+if (Inst==1) then
+	PixelSorter_s.Instructions(ipn)
+end

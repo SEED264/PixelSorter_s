@@ -17,11 +17,11 @@ fi
 cd $script_dir"/build"
 
 # Install dir
-cmake_install_path="C:\Software\AviUtl\plugins\script\SEED264"
+cmake_install_path=""
 
 # Lua dirs
-lua_include_dir="C:\Dev\Lua\lua5_1_4_Win32_dll8_lib\include"
-lua_library_dir="C:\Dev\Lua\lua5_1_4_Win32_dll8_lib"
+lua_include_dir=""
+lua_library_dir=""
 
 # Launch cmake
 case $mode in
