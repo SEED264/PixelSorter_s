@@ -26,7 +26,7 @@ case $mode in
 ;;
 
 "install")
-    MSBuild.exe ./INSTALL.vcxproj -t:Build -p:Configuration=Debug -p:Platform="Win32" -v:m -nologo
+    MSBuild.exe ./INSTALL.vcxproj -t:Build -p:Configuration=Release -p:Platform="Win32" -v:m -nologo
 ;;
 
 *)
