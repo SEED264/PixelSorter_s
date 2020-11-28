@@ -1,6 +1,10 @@
 #ifndef UTILFUNC_H
 #define UTILFUNC_H
 
+#ifndef NOMINMAX
+#define NOMINMAX 1
+#endif // NOMINMAX
+
 #include "PixelSort_struct.h"
 #include <Windows.h>
 
@@ -8,7 +12,7 @@ namespace UtilFunc{
 
     template<typename Xtype, typename Xtype2, typename Xtype3>
     inline Xtype clamp(Xtype Value, Xtype2 Min, Xtype3 Max){
-        return max(Min, min(Value, Max));
+        return std::max(Min, (Xtype2)std::min(Value, (Xtype)Max));
     }
 
     float comp_luminance(Pixel_BGRA *pix);
