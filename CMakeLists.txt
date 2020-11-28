@@ -1,0 +1,32 @@
+cmake_minimum_required(VERSION 3.10.0)
+project(PixelSorter_s CXX)
+
+set(LUA_INCLUDE_DIR "/" CACHE PATH "Lua include dir")
+set(LUA_LIBRARY_DIR "/" CACHE PATH "Lua include dir")
+
+
+add_library(${PROJECT_NAME} SHARED)
+target_sources(${PROJECT_NAME} PRIVATE
+    src/PixelSort.cpp
+    src/Trans.cpp
+    src/UtilFunc.cpp
+)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
+target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
+
+target_link_directories(${PROJECT_NAME} PRIVATE ${LUA_LIBRARY_DIR})
+target_link_libraries(${PROJECT_NAME} PRIVATE lua51)
+
+if("${CMAKE_CXX_COMPILER_ID}" MATCHES "MSVC")
+    target_compile_options(${PROJECT_NAME} PRIVATE /source-charset:utf-8 /MT /Ox /openmp)
+else()
+    target_compile_options(${PROJECT_NAME} PRIVATE -static -m32)
+    target_link_options(${PROJECT_NAME} PRIVATE -m32)
+endif()
+
+# Disable DLL name prefix("lib")
+set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "")
+
+# Install DLL and script
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION /)
+install(FILES script/${PROJECT_NAME}.anm DESTINATION /)
