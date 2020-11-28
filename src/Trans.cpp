@@ -42,9 +42,8 @@ void Trans::Restore(Pixel_BGRA *idata, Pixel_BGRA *odata, isize in_isize, isize 
     for (long y = 0; y < out_isize.h; y++){
     #pragma omp parallel for
         for (long x = 0; x < out_isize.w; x++){
-    for (unsigned long y = 0; y < out_isize.h; y++){
-        for (unsigned long x = 0; x < out_isize.w; x++){
-            stretch_pos sp = UtilFunc::calc_stretch(x, y, out_isize.w, out_isize.h, direction, length);
+            stretch_pos sp;
+            UtilFunc::calc_stretch(x, y, out_isize.w, out_isize.h, direction, length, &sp);
             Pixel_BGRA p = idata[sp.coly / mag*in_isize.w + sp.colx / mag];
             Pixel_BGRA op = odata[y*out_isize.w + x];
             float as = p.a / 255.0f, ad = op.a / 255.0f;
@@ -63,10 +62,8 @@ void Trans::Restore_r(Pixel_BGRA *idata, Pixel_BGRA *odata, isize in_isize, isiz
     for (long y = 0; y < out_isize.h; y++){
     #pragma omp parallel for
         for (long x = 0; x < out_isize.w; x++){
-    for (unsigned long y = 0; y < out_isize.h; y++){
-        for (unsigned long x = 0; x < out_isize.w; x++){
-            stretch_pos sp = UtilFunc::calc_stretch(x, y, out_isize.w, out_isize.h, direction, length);
-            Pixel_BGRA p = idata[sp.colx / mag*in_isize.h + min(sp.coly / mag, out_isize.h)];
+            stretch_pos sp;
+            UtilFunc::calc_stretch(x, y, out_isize.w, out_isize.h, direction, length, &sp);
             Pixel_BGRA p = idata[sp.colx / mag*in_isize.h + std::min(sp.coly / mag, (int)out_isize.h)];
             Pixel_BGRA op = odata[y*out_isize.w + x];
             float as = p.a / 255.0f, ad = op.a / 255.0f;

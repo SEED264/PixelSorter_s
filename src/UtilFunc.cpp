@@ -33,7 +33,7 @@ float UtilFunc::comp_xor(Pixel_BGRA *pix) {
 }
 
 
-stretch_pos& UtilFunc::calc_stretch(int x, int y, int w, int h, int direction, float length){
+void UtilFunc::calc_stretch(int x, int y, int w, int h, int direction, float length, stretch_pos *out_pos) {
     w -= 1;
     h -= 1;
     float mx = x, my = y;
@@ -51,8 +51,6 @@ stretch_pos& UtilFunc::calc_stretch(int x, int y, int w, int h, int direction, f
         mx = w - (w - x)*(1.0f - length);
         break;
     }
-    stretch_pos p;
-    p.colx = mx;
-    p.coly = my;
-    return p;
+    out_pos->colx = mx;
+    out_pos->coly = my;
 }
