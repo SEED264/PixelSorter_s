@@ -88,8 +88,8 @@ int PixelSort_Func(lua_State *L){
         Trans::Shrink(data, sdata, orig_isize, shr_isize, dsize);
     }
     Pixel_map *map = new Pixel_map[dw*dh];
-#pragma omp parallel for
-    for (unsigned long i = 0; i < dw*dh; i++) {
+    #pragma omp parallel for
+    for (long i = 0; i < dw*dh; i++) {
         Pixel_map *m = &map[i];
         m->pix = sdata[i];
         m->sort_key = comp_func[comp](&m->pix);
@@ -100,7 +100,7 @@ int PixelSort_Func(lua_State *L){
     int vh =  (r < 3) ? dw : dh;
     if(!conf){
         #pragma omp parallel for
-        for (unsigned long y = 0; y < vh; y++){
+        for (long y = 0; y < vh; y++){
             vector<Pixel_map> pix;
             unsigned long x = 0;
             unsigned long offsetpos = 0;
@@ -142,7 +142,7 @@ int PixelSort_Func(lua_State *L){
         }
     } else {
         #pragma omp parallel for
-        for (unsigned long i = 0; i < vw*vh; i++){
+        for (long i = 0; i < vw*vh; i++){
             Pixel_BGRA p = sdata[i];
             if (p.a){
                 p.r = 0;

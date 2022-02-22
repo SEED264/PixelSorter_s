@@ -23,7 +23,7 @@ namespace UtilFunc{
 
     float comp_xor(Pixel_BGRA *pix);
 
-    stretch_pos& calc_stretch(int x, int y, int w, int h, int direction, float length);
+    stretch_pos calc_stretch(int x, int y, int w, int h, int direction, float length);
 
 }
 
