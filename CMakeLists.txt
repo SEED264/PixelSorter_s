@@ -1,17 +1,17 @@
 cmake_minimum_required(VERSION 3.10.0)
-set(CMAKE_CXX_COMPILER clang++)
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 project(PixelSorter_s CXX)
 
 set(LUA_INCLUDE_DIR "/" CACHE PATH "Lua include dir")
 set(LUA_LIBRARY_DIR "/" CACHE PATH "Lua include dir")
 
-add_library(${PROJECT_NAME} SHARED)
-target_sources(${PROJECT_NAME} PRIVATE PixelSorter_s/PixelSort.cpp)
-target_sources(${PROJECT_NAME} PRIVATE PixelSorter_s/Trans.cpp)
-target_sources(${PROJECT_NAME} PRIVATE PixelSorter_s/UtilFunc.cpp)
 
-target_include_directories(${PROJECT_NAME} PRIVATE PixelSorter_s)
+add_library(${PROJECT_NAME} SHARED)
+target_sources(${PROJECT_NAME} PRIVATE
+    src/PixelSort.cpp
+    src/Trans.cpp
+    src/UtilFunc.cpp
+)
+target_include_directories(${PROJECT_NAME} PRIVATE src)
 target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${LUA_LIBRARY_DIR})
