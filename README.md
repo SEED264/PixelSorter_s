@@ -1,4 +1,4 @@
-# PixelSorter_s
+# PixelSorter_s 【English Port】
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ## ビルド
 
