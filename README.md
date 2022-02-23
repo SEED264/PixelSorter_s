@@ -2,7 +2,7 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ## ビルド
 
-`MSBuild.exe`にパスが通っていることが前提です。
+`MSBuild.exe`にパスが通っていることが前提です。  
 `cmake_batch.sh`の`cmake_install_path`にdllとanmファイルをインストールするパスを、
 `lua_include_dir`に`lua.hpp`があるパスを、
 `lua_library_dir`に`lua51.lib`があるパスを入れてください。  
