@@ -2,11 +2,21 @@
 ![Packagist](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ## ビルド
 
-事前にシステムかユーザーの環境変数に`LUA_LIB_PATH`、`LUA_INC_PATH`を作り、Luaのライブラリとヘッダファイルのパスを登録しておくと、後々楽です。  
-そうでない場合は、プロジェクトのプロパティの`C/C++ -> General -> Additional Include Directories`の`$(LUA_INC_PATH)`をLuaのヘッダのインクルードパスに、`Linker -> General -> Additional Library Directories`の`$(LUA_LIB_PATH)`をLuaのライブラリのパスにそれぞれ変更してください。  
-
-その後、`General -> Output Directory`をDLLを出力したい場所に変更してください。  
-自分のスクリプトのフォルダなどにしておくと、ビルドするたびにDLLをコピーしなくてもよくなるので少し楽になります。
+`MSBuild.exe`にパスが通っていることが前提です。
+`cmake_batch.sh`の`cmake_install_path`にdllとanmファイルをインストールするパスを、
+`lua_include_dir`に`lua.hpp`があるパスを、
+`lua_library_dir`に`lua51.lib`があるパスを入れてください。  
+`build`ディレクトリを作って入り、
+```sh
+../cmake_batch.sh msvc
+```
+でプロジェクトを生成します。
+そのまま
+```sh
+../msvc_build.sh install
+```
+で、ビルド時にエラーが起きなければ`cmake_install_path`で指定したディレクトリに`PixelSorter_s.dll`と
+`PixelSorter_s.anm`がインストールされます。
 
 
 ## スクリプト内での呼び出し
